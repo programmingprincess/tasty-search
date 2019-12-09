@@ -1,0 +1,32 @@
+<h1>Tasty Search</h1>
+
+<input id="search-query" class="form-control" type="text" placeholder="What are you looking for?" aria-label="Search" value = "{{query}}" required>
+
+<input id = "submit-query" class="form-control" type="submit" value="Find it!" aria-label="Search">
+
+<h2>Results</h2>
+
+{% for result in results %}
+	<div>
+		<h3>{{result.title}}</h3>
+		<p>By {{result.author}}</p>
+		<p>{{result.abstract}}</p>
+		<br>
+	</div>
+{% endfor %}
+
+
+<footer>
+	<script src='{{url_for('static', filename='jquery-3.0.0.min.js')}}'></script>
+	<script src='{{url_for('static', filename='bootstrap.min.js')}}'></script>
+
+	<script> 
+	var button = document.getElementById("submit-query");
+	button.onclick = function(){
+		var query_string = document.getElementById("search-query").value
+		console.log(query_string);
+	};
+
+	</script>
+
+</footer>
