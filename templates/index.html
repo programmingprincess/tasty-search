@@ -19,8 +19,17 @@
 	var button = document.getElementById("submit-query");
 	button.onclick = function(){
 		var query_string = document.getElementById("search-query").value
-		console.log(query_string);
+		console.log("{{ url_for('results') }}?query=\'" + query_string+"\'");
+		window.location.href = "{{ url_for('results') }}?query=\'" + query_string+"\'";
 	};
+
+	var input = document.getElementById("search-query");
+	input.addEventListener("keyup", function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			button.click();
+		}
+	});
 
 	</script>
 
