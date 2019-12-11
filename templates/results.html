@@ -17,6 +17,7 @@
 				<input id = "submit-query" class="form-control btn" type="submit" value="Search" aria-label="Search">
 			</div>
 		</div>
+		<div class="divider"></div>
 		<div class="results">
 			<p>Showing top 10 results...</p>
 
@@ -26,6 +27,8 @@
 						<div class="col">
 							<h5 class="title">{{result.title}}</h5>
 							<p class="abstract">{{result.abstract}}</p>
+							<span class="citations">Cited by {{result.numCitedBy}}</span>
+							<span class="key-citations">Key citations: {{result.numKeyCitations}}</span>
 						</div>
 						<div class="col s3">
 							<div class="keywords card">
@@ -39,6 +42,7 @@
 											</label>
 										</p>
 									{% endfor %}
+									<input placeholder="Enter your own keyword" id="first_name" type="text" class="validate">
 								</div>
 							</div>
 						</div>

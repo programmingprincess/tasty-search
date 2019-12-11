@@ -9,16 +9,27 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 test = [{
 	"title": "Paper 1",
-	"abstract": "Fake Abstract 1",
-	"keywords": ["paper", "abstract", "test"]
+	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"keywords": ["paper", "abstract", "test"],
+	"venue": "CHI",
+	"numCitedBy": "10",
+	"numKeyCitations": "5"
+
 }, {
 	"title": "Paper 2",
-	"abstract": "Fake Abstract 2",
-	"keywords": ["paper", "abstract", "test"]
+	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"keywords": ["paper", "abstract", "test"],
+	"venue": "CHI",
+	"numCitedBy": "15",
+	"numKeyCitations": "10"
 }, {
 	"title": "Paper 3",
-	"abstract": "Fake Abstract 3",
-	"keywords": ["paper", "abstract", "test", "information retrieval"]
+	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"keywords": ["paper", "abstract", "test", "information retrieval"],
+	"venue": "CHI",
+	"numCitedBy": "20",
+	"numKeyCitations": "15"
+
 }]
 
 @app.route('/')

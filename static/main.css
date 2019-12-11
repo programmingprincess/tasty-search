@@ -24,13 +24,13 @@ h3 {
 }
 
 #logo {
-	color: #2d433ca3;
+	color: #949494;
 	font-family: 'Josefin Sans', sans-serif;
 }
 
 #logo a, #logo visited {
 	text-decoration: none;
-	color: #2d433ca3
+	color: #949494;
 }
 
 #nav {
