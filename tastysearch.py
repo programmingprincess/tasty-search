@@ -4,6 +4,10 @@ import requests
 import configparser
 import json
 
+import pyltr
+import pickle
+import sklearn
+
 app = Flask(__name__)
 
 test = [{
@@ -23,9 +27,68 @@ test = [{
 	"keywords": ["paper", "abstract", "test", "information retrieval"]
 }]
 
+sup_model=""
+with open(r"pickles/lamdamart_1000_0.02_50.pickle", "rb") as f:
+		sup_model = pickle.load(f, encoding="latin1")
+
+docs= ""
+with open(r"pickles/docs.pickle", "rb") as f:
+		docs = pickle.load(f, encoding="latin1")
+
+docs_info=""
+with open(r"pickles/docs_info.pickle", "rb") as f:
+		docs_info = pickle.load(f, encoding="latin1")
+
+def model_predict(query):
+	'''
+	parameters
+	- query: the query a user inputted 
+
+	output
+	- list of top X documents that are relevant to the query
+	'''
+	test_x = get_features(query)
+	pred = model.predict(test_x)
+
+	print("Model_predict activated")
+	print(docs_info)
+	#sup_model.predict()
+	return ""
+
+
+def get_doc_list(test_pred, n):
+	'''
+	parameters
+	- test_pred: document ranking scores by supervised model 
+			(ordered by docs_info. iteration through dictionaries are stable)
+	- n: the top N 
+	'''
+	# pred_dict = []
+
+	# # return the document associated with each score
+	# for idx, key in enumerate(docs_info):
+	# 	pred_dict.append([key, test_pred[idx]])	
+	    
+ #  my_scores = sorted(pred_dict, key = lambda x: x[1], reverse=True)
+ #  res = []
+
+ #  for i in range(0,n):
+ #      try:
+ #          res = my_scores[i]        
+ #          f.write(str(q_id) + "\t" + str(res[0]) + "\t" + str(res[1]) + "\n")
+ #      except:
+ #          pass
+
+	# f.close()
+
+def get_features(query):
+
+	return "" 
+
 @app.route('/')
 def hello(name=None):
-    return render_template('index.html', name=name)
+	model_predict("lol")
+	return render_template('index.html', name=name)
 
 @app.route('/results', methods=['GET'])
 def results():
