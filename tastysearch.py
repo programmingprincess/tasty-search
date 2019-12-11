@@ -15,31 +15,6 @@ import sklearn
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-test = [{
-	"title": "Paper 1",
-	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-	"keywords": ["paper", "abstract", "test"],
-	"venue": "CHI",
-	"numCitedBy": "10",
-	"numKeyCitations": "5"
-
-}, {
-	"title": "Paper 2",
-	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-	"keywords": ["paper", "abstract", "test"],
-	"venue": "CHI",
-	"numCitedBy": "15",
-	"numKeyCitations": "10"
-}, {
-	"title": "Paper 3",
-	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-	"keywords": ["paper", "abstract", "test", "information retrieval"],
-	"venue": "CHI",
-	"numCitedBy": "20",
-	"numKeyCitations": "15"
-
-}]
-
 '''
 	We have to read through latin1 because python2-->python3 encoding 
 
@@ -52,7 +27,7 @@ test = [{
 '''
 
 sup_model=""
-with open(r"pickles/lamdamart_1000_0.02_50.pickle", "rb") as f:
+with open(r"pickles/lamdamart_1000_0.02_50_try2.pickle", "rb") as f:
 		sup_model = pickle.load(f, encoding="latin1")
 
 docs_info=""
@@ -111,8 +86,8 @@ def get_sorted_docs(test_pred, n):
 	pred_dict = []
 
 	# return the document associated with each score
-	for idx, key in enumerate(docs_info.keys()):
-		pred_dict.append([key, test_pred[idx]])	
+	for idx, doc in enumerate(docs_info.keys()):
+		pred_dict.append([doc, test_pred[idx]])	
 	    
 	my_scores = sorted(pred_dict, key = lambda x: x[1], reverse=True)
 
@@ -128,7 +103,9 @@ def get_features(query):
 	q = metapy.index.Document()
 	q.content(query)
 	
+	print("Scoring BM25...")
 	score_bm25 = ranker.score(idx, q, num_results=8541)
+	print("Scoring Absolute Discounting...")
 	score_ad = ranker2.score(idx, q, num_results=8541)
 
 	scores_bm25 = {}
@@ -139,7 +116,7 @@ def get_features(query):
 		scores_ad[idx.metadata(score_ad[score][0]).get('id')] = score_ad[score][1]
 
 	res = []
-	for doc in docs_info.keys():
+	for idx,doc in enumerate(docs_info.keys()):
 		res.append([scores_bm25[doc], scores_ad[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
 
 	return res
