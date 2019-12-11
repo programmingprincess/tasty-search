@@ -26,7 +26,7 @@
 					<div class="row">
 						<div class="col">
 							<h5 class="title">{{result.title}}</h5>
-							<p class="abstract">{{result.abstract}}</p>
+							<p class="abstract">{{result.paperAbstract}}</p>
 							<span class="citations">Cited by {{result.numCitedBy}}</span>
 							<span class="key-citations">Key citations: {{result.numKeyCitations}}</span>
 						</div>
@@ -34,7 +34,7 @@
 							<div class="keywords card">
 								<div class="card-content">
 									<span class="card-title">Keywords</span>
-									{% for keyword in result.keywords %}
+									{% for keyword in result.keyPhrases %}
 										<p>
 											<label>
 												<input type="checkbox" class="filled-in" />
