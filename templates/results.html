@@ -1,30 +1,60 @@
 <head>
 	<title>Tasty Search</title>
 	<link href='{{url_for('static', filename='main.css')}}' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
-	<h1><a href="/"><span id="logo">Tasty</span> Search</a></h1>
-
-	<input id="search-query" class="form-control" type="text" placeholder="What are you looking for?" aria-label="Search" value = "{{query}}" required>
-
-	<input id = "submit-query" class="form-control" type="submit" value="Find it!" aria-label="Search">
-
-	<h2>Results</h2>
-
-	{% for result in results %}
-		<div>
-			<h3>{{result.title}}</h3>
-			<p>By {{result.author}}</p>
-			<p>{{result.abstract}}</p>
-			<br>
+	<div class="container" id="main-content">
+		<div class="row" id="nav">
+			<div class="col">
+				<h4 id="logo"><a href="/"><span id="logo-tasty">Tasty</span> Search</a></h4>
+			</div>
+			<div class="col s6">
+				<input id="search-query" class="form-control" type="text" placeholder="What are you looking for?" aria-label="Search" value = "{{query}}" required>
+			</div>
+			<div class="col">
+				<input id = "submit-query" class="form-control btn" type="submit" value="Search" aria-label="Search">
+			</div>
 		</div>
-	{% endfor %}
+		<div class="results">
+			<p>Showing top 10 results...</p>
+
+			{% for result in results %}
+				<div class="section result">
+					<div class="row">
+						<div class="col">
+							<h5 class="title">{{result.title}}</h5>
+							<p class="abstract">{{result.abstract}}</p>
+						</div>
+						<div class="col s3">
+							<div class="keywords card">
+								<div class="card-content">
+									<span class="card-title">Keywords</span>
+									{% for keyword in result.keywords %}
+										<p>
+											<label>
+												<input type="checkbox" class="filled-in" />
+												<span>{{keyword}}</span>
+											</label>
+										</p>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="divider"></div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
 </body>
 <footer>
 	<script src='{{url_for('static', filename='jquery-3.0.0.min.js')}}'></script>
 	<script src='{{url_for('static', filename='bootstrap.min.js')}}'></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-	<script> 
+	<script>
 	var button = document.getElementById("submit-query");
 	button.onclick = function(){
 		var query_string = document.getElementById("search-query").value

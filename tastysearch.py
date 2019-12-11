@@ -5,21 +5,19 @@ import configparser
 import json
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 test = [{
 	"title": "Paper 1",
 	"abstract": "Fake Abstract 1",
-	"author": "John B. Doe",
 	"keywords": ["paper", "abstract", "test"]
 }, {
 	"title": "Paper 2",
 	"abstract": "Fake Abstract 2",
-	"author": "John B. Doe II",
 	"keywords": ["paper", "abstract", "test"]
 }, {
 	"title": "Paper 3",
 	"abstract": "Fake Abstract 3",
-	"author": "Jane A. Doe",
 	"keywords": ["paper", "abstract", "test", "information retrieval"]
 }]
 
