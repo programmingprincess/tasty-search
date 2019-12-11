@@ -1,3 +1,5 @@
+#!/usr/bin/python2
+
 from flask import Flask, render_template, url_for, request, redirect
 import random
 import requests
@@ -6,27 +8,36 @@ import json
 
 import metapy
 
-import pyltr
+#import pyltr
 import pickle
 import sklearn
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 test = [{
 	"title": "Paper 1",
-	"abstract": "Fake Abstract 1",
-	"author": "John B. Doe",
-	"keywords": ["paper", "abstract", "test"]
+	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"keywords": ["paper", "abstract", "test"],
+	"venue": "CHI",
+	"numCitedBy": "10",
+	"numKeyCitations": "5"
+
 }, {
 	"title": "Paper 2",
-	"abstract": "Fake Abstract 2",
-	"author": "John B. Doe II",
-	"keywords": ["paper", "abstract", "test"]
+	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"keywords": ["paper", "abstract", "test"],
+	"venue": "CHI",
+	"numCitedBy": "15",
+	"numKeyCitations": "10"
 }, {
 	"title": "Paper 3",
-	"abstract": "Fake Abstract 3",
-	"author": "Jane A. Doe",
-	"keywords": ["paper", "abstract", "test", "information retrieval"]
+	"abstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+	"keywords": ["paper", "abstract", "test", "information retrieval"],
+	"venue": "CHI",
+	"numCitedBy": "20",
+	"numKeyCitations": "15"
+
 }]
 
 '''
@@ -64,6 +75,8 @@ def model_predict(query):
 	'''
 
 	test_x = get_features(query)
+	for x in test_x:
+		x.extend([0, 0])
 	print("Recieved features. Predicting...")
 	pred = sup_model.predict(test_x)
 	res=get_sorted_docs(pred, 10)
@@ -108,6 +121,7 @@ def get_sorted_docs(test_pred, n):
 	return my_scores[:n]
 
 def get_features(query):
+	
 	idx = metapy.index.make_inverted_index('config_academic.toml')
 	ranker = metapy.index.OkapiBM25()
 	ranker2 = metapy.index.AbsoluteDiscount()
@@ -127,9 +141,10 @@ def get_features(query):
 
 	res = []
 	for doc in docs_info.keys():
-		res.append((scores_b25[doc], scores_ad[doc]))
+		res.append([scores_b25[doc], scores_ad[doc]])
 
 	return res
+	
 
 @app.route('/')
 def hello(name=None):
