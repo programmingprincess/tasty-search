@@ -1,0 +1,32 @@
+#stop-words = "General_data/lemur-stopwords.txt"
+prefix = "."
+
+dataset = "Academic_papers"
+corpus = "line.toml" # located inside dataset folder
+index = "aca_data_idx"
+#query-judgements = "General_data/train_qrel"
+
+[[analyzers]]
+method = "ngram-word"
+ngram = 1
+	[[analyzers.filter]]
+    type = "icu-tokenizer"
+
+    [[analyzers.filter]]
+    type = "lowercase"
+
+    [[analysers.filter]]
+    type = "alpha"
+
+    [[analyzers.filter]]
+    type = "list"
+    file = "Academic_papers/lemur-stopwords.txt"
+
+    [[analyzers.filter]]
+    type = "porter2-filter"
+
+[ranker]
+method = "bm25"
+k1 = 1.2
+b = 0.75
+k3 = 500
