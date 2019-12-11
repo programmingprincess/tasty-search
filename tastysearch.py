@@ -29,18 +29,23 @@ test = [{
 	"keywords": ["paper", "abstract", "test", "information retrieval"]
 }]
 
+'''
+	We have to read through latin1 because python2-->python3 encoding 
 
-# we have to read through latin1 because python2-->python3 encoding 
+	sup_model: supervised LambdaMART model with 1000 estimators
+					   trained on the training set given by search engine competition
+
+	docs_info: dictionary of dictionaries. keyed by doc_id. contains:
+					   paperAbstract, title, venue, numCitedBy, numKeyCitations, 
+					   keyPhrases, numKeyReferences
+'''
+
 sup_model=""
 with open(r"pickles/lamdamart_1000_0.02_50.pickle", "rb") as f:
 		sup_model = pickle.load(f, encoding="latin1")
 
-# docs= ""
-# with open(r"pickles/docs.pickle", "rb") as f:
-# 		docs = pickle.load(f, encoding="latin1")
-
 docs_info=""
-with open(r"pickles/docs_info_full.pickle", "rb") as f:
+with open(r"pickles/docs_info.pickle", "rb") as f:
 		docs_info = pickle.load(f, encoding="latin1")
 
 def model_predict(query):
@@ -49,41 +54,58 @@ def model_predict(query):
 	- query: the query a user inputted 
 
 	output
-	- list of top X documents that are relevant to the query
+	- JSON of top X documents that are relevant to the query
+		each doc json contains: paperAbstract, title, venue, numCitedBy, 
+		numKeyCitations, keyPhrases, numKeyReferences
+
+
+	TODO:
+	- there may be multiple venues. right now we just take the first one
 	'''
+
 	test_x = get_features(query)
-	pred = model.predict(test_x)
+	print("Recieved features. Predicting...")
+	pred = sup_model.predict(test_x)
+	res=get_sorted_docs(pred, 10)
 
-	print("Model_predict activated")
-	print(docs_info)
-	#sup_model.predict()
-	return ""
+	res_dict = []
+	for i in res:
+		doc_id=i[0]
+		# prettify the original dictionary values
+		d={}
+		d['title']=docs_info[doc_id]['title'][0]
+		d['paperAbstract']=docs_info[doc_id]['paperAbstract'][0]
+		d['venue']=docs_info[doc_id]['venue'][0]
+		d['numCitedBy']=docs_info[doc_id]['numCitedBy'][0]
+		d['numKeyCitations']=docs_info[doc_id]['numKeyCitations'][0]
+		d['numKeyReferences']=docs_info[doc_id]['numKeyReferences'][0]
+		d['keyPhrases']=docs_info[doc_id]['keyPhrases']
+
+		res_dict.append(d)
+
+	
+	return json.dumps(res_dict)
 
 
-def get_doc_list(test_pred, n):
+def get_sorted_docs(test_pred, n):
 	'''
 	parameters
 	- test_pred: document ranking scores by supervised model 
 			(ordered by docs_info. iteration through dictionaries are stable)
-	- n: the top N 
+	- n: the top N documents we want to return as a result
+
+	output: 
+	- list of (doc_id, score), sorted by top n 
 	'''
-	# pred_dict = []
+	pred_dict = []
 
-	# # return the document associated with each score
-	# for idx, key in enumerate(docs_info):
-	# 	pred_dict.append([key, test_pred[idx]])	
+	# return the document associated with each score
+	for idx, key in enumerate(docs_info):
+		pred_dict.append([key, test_pred[idx]])	
 	    
- #  my_scores = sorted(pred_dict, key = lambda x: x[1], reverse=True)
- #  res = []
+	my_scores = sorted(pred_dict, key = lambda x: x[1], reverse=True)
 
- #  for i in range(0,n):
- #      try:
- #          res = my_scores[i]        
- #          f.write(str(q_id) + "\t" + str(res[0]) + "\t" + str(res[1]) + "\n")
- #      except:
- #          pass
-
-	# f.close()
+	return my_scores[:n]
 
 def get_features(query):
 	"""
@@ -111,6 +133,7 @@ def get_features(query):
 		return res
 	"""
 	return ""
+
 @app.route('/')
 def hello(name=None):
 	model_predict("lol")
@@ -119,9 +142,9 @@ def hello(name=None):
 @app.route('/results', methods=['GET'])
 def results():
 
+	# "pretty" removes the quotations at beginning and end of query
 	pretty_query = request.args.get('query')
 	pretty_query = pretty_query[1:-1]
-
-	results = test
+	results = json.loads(model_predict(pretty_query))
 
 	return render_template('results.html', results=results, query=pretty_query)
