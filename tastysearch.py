@@ -141,7 +141,7 @@ def get_features(query):
 
 	res = []
 	for doc in docs_info.keys():
-		res.append([scores_b25[doc], scores_ad[doc]])
+		res.append([scores_bm25[doc], scores_ad[doc]])
 
 	return res
 	
