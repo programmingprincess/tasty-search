@@ -27,7 +27,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 '''
 
 sup_model=""
-with open(r"pickles/lamdamart_1000_0.02_50_try2.pickle", "rb") as f:
+with open(r"pickles/lamdamart_3_ft.pickle.pickle", "rb") as f:
 		sup_model = pickle.load(f, encoding="latin1")
 
 docs_info=""
@@ -117,7 +117,8 @@ def get_features(query):
 
 	res = []
 	for idx,doc in enumerate(docs_info.keys()):
-		res.append([scores_bm25[doc], scores_ad[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
+		#res.append([scores_bm25[doc], scores_ad[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
+		res.append([scores_bm25[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
 
 	return res
 	
