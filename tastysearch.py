@@ -111,7 +111,7 @@ def get_sorted_docs(test_pred, n):
 	pred_dict = []
 
 	# return the document associated with each score
-	for idx, key in enumerate(docs_info):
+	for idx, key in enumerate(docs_info.keys()):
 		pred_dict.append([key, test_pred[idx]])	
 	    
 	my_scores = sorted(pred_dict, key = lambda x: x[1], reverse=True)
@@ -119,8 +119,9 @@ def get_sorted_docs(test_pred, n):
 	return my_scores[:n]
 
 def get_features(query):
-	
+	print("Making inverted index...")
 	idx = metapy.index.make_inverted_index('config_academic.toml')
+	print("Inverted index finished!")
 	ranker = metapy.index.OkapiBM25()
 	ranker2 = metapy.index.AbsoluteDiscount()
 
