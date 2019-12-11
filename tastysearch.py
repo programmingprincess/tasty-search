@@ -1,5 +1,3 @@
-#!/usr/bin/python2
-
 from flask import Flask, render_template, url_for, request, redirect
 import random
 import requests
@@ -27,7 +25,7 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 '''
 
 sup_model=""
-with open(r"pickles/lamdamart_3_ft.pickle.pickle", "rb") as f:
+with open(r"pickles/lamdamart_3_ft.pickle", "rb") as f:
 		sup_model = pickle.load(f, encoding="latin1")
 
 docs_info=""
