@@ -1,8 +1,8 @@
 <head>
 	<title>Tasty Search</title>
-	<link href='{{url_for('static', filename='main.css')}}' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href='{{url_for('static', filename='main.css')}}' rel='stylesheet' type='text/css'>
 </head>
 <body>
 	<div class="container" id="main-content">
@@ -24,26 +24,32 @@
 			{% for result in results %}
 				<div class="section result">
 					<div class="row">
-						<div class="col">
+						<div class="col s9">
 							<h5 class="title">{{result.title}}</h5>
 							<p class="abstract">{{result.paperAbstract}}</p>
-							<span class="citations">Cited by {{result.numCitedBy}}</span>
-							<span class="key-citations">Key citations: {{result.numKeyCitations}}</span>
+							<div class="citations">
+								<p>Cited by: {{result.numCitedBy}}</p>
+								<p>Key citations: {{result.numKeyCitations}}</p>
+							</div>
 						</div>
 						<div class="col s3">
-							<div class="keywords card">
-								<div class="card-content">
-									<span class="card-title">Keywords</span>
-									{% for keyword in result.keyPhrases %}
-										<p>
-											<label>
-												<input type="checkbox" class="filled-in" />
-												<span>{{keyword}}</span>
-											</label>
-										</p>
-									{% endfor %}
-									<input placeholder="Enter your own keyword" id="first_name" type="text" class="validate">
-								</div>
+							<div class="keywords-card card-panel">
+									<div class="card-title">Keywords</div>
+									<div class="card-content">
+										<div class="keywords">
+											{% for keyword in result.keyPhrases %}
+												<p>
+													<label>
+														<input type="checkbox" class="filled-in" />
+														<span>{{keyword}}</span>
+													</label>
+												</p>
+											{% endfor %}
+										</div>
+										<div class="user-tag">
+											<input id="type-tag" placeholder="Add a tag" type="text" class="form-control validate">
+											<button id="add-tag" class="form-control btn" type="button" value="Add" aria-label="Add tag">Add</button>
+										</div>
 							</div>
 						</div>
 					</div>
@@ -59,17 +65,32 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 	<script>
-	var button = document.getElementById("submit-query");
-	button.onclick = function(){
+	var query_button = document.getElementById("submit-query");
+	query_button.onclick = function(){
 		var query_string = document.getElementById("search-query").value
 		console.log(query_string);
 	};
 
-	var input = document.getElementById("search-query");
-	input.addEventListener("keyup", function(event) {
+	var query_input = document.getElementById("search-query");
+	query_input.addEventListener("keyup", function(event) {
 		if (event.keyCode === 13) {
 			event.preventDefault();
-			button.click();
+			query_button.click();
+		}
+	});
+
+	var tag_button = document.getElementById("add-tag");
+	tag_button.onclick = function(){
+		var tag_string = document.getElementById("type-tag").value
+		console.log(tag_string);
+		$(this).parent().prop('className')
+	};
+
+	var tag_input = document.getElementById("type-tag");
+	tag_input.addEventListener("keyup", function(event) {
+		if (event.keyCode === 13) {
+			event.preventDefault();
+			tag_button.click();
 		}
 	});
 	</script>
