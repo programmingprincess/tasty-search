@@ -4,6 +4,8 @@ import requests
 import configparser
 import json
 
+import metapy
+
 import pyltr
 import pickle
 import sklearn
@@ -106,10 +108,28 @@ def get_sorted_docs(test_pred, n):
 	return my_scores[:n]
 
 def get_features(query):
-	fake_features=[]
-	for i in docs_info:
-		fake_features.append([0,0,0,0])
-	return fake_features
+	idx = metapy.index.make_inverted_index('config_academic.toml')
+	ranker = metapy.index.OkapiBM25()
+	ranker2 = metapy.index.AbsoluteDiscount()
+
+	q = metapy.index.Document()
+	q.content(query)
+	
+	score_bm25 = ranker.score(idx, q, num_results=8541)
+	score_ad = ranker2.score(idx, q, num_results=8541)
+
+	scores_bm25 = {}
+	scores_ad = {}
+
+	for score in range(len(score_bm25)):
+		scores_bm25[idx.metadata(score_bm25[score][0]).get('id')] = score_bm25[score][1]
+		scores_ad[idx.metadata(score_ad[score][0]).get('id')] = score_ad[score][1]
+
+	res = []
+	for doc in docs_info.keys():
+		res.append((scores_b25[doc], scores_ad[doc]))
+
+	return res
 
 @app.route('/')
 def hello(name=None):
