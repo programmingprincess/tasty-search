@@ -27,16 +27,18 @@ test = [{
 	"keywords": ["paper", "abstract", "test", "information retrieval"]
 }]
 
+
+# we have to read through latin1 because python2-->python3 encoding 
 sup_model=""
 with open(r"pickles/lamdamart_1000_0.02_50.pickle", "rb") as f:
 		sup_model = pickle.load(f, encoding="latin1")
 
-docs= ""
-with open(r"pickles/docs.pickle", "rb") as f:
-		docs = pickle.load(f, encoding="latin1")
+# docs= ""
+# with open(r"pickles/docs.pickle", "rb") as f:
+# 		docs = pickle.load(f, encoding="latin1")
 
 docs_info=""
-with open(r"pickles/docs_info.pickle", "rb") as f:
+with open(r"pickles/docs_info_full.pickle", "rb") as f:
 		docs_info = pickle.load(f, encoding="latin1")
 
 def model_predict(query):
