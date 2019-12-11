@@ -75,8 +75,6 @@ def model_predict(query):
 	'''
 
 	test_x = get_features(query)
-	for x in test_x:
-		x.extend([0, 0])
 	print("Recieved features. Predicting...")
 	pred = sup_model.predict(test_x)
 	res=get_sorted_docs(pred, 10)
@@ -141,7 +139,7 @@ def get_features(query):
 
 	res = []
 	for doc in docs_info.keys():
-		res.append([scores_b25[doc], scores_ad[doc]])
+		res.append([scores_b25[doc], scores_ad[doc], docs_info[doc]['numCitedBy'],docs_info[doc]['numKeyCitations']])
 
 	return res
 	
