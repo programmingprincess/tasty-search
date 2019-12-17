@@ -85,8 +85,13 @@
 	var tag_button = document.getElementById("add-tag");
 	tag_button.onclick = function(){
 		var tag_string = document.getElementById("type-tag").value
-		console.log(tag_string);
-		$(this).parent().prop('className')
+		//console.log(tag_string);
+		console.log($(this).parent().siblings()[0]);
+		if (tag_string !== "") {
+			let new_p = document.createElement("p");
+			new_p.innerHTML = "<label><input type='checkbox' class='filled-in' /><span>" + tag_string + "</span></label>"
+			$(this).parent().siblings()[0].append(new_p);
+		}
 	};
 
 	var tag_input = document.getElementById("type-tag");
@@ -96,6 +101,7 @@
 			tag_button.click();
 		}
 	});
+
 	</script>
 
 </footer>
