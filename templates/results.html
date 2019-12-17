@@ -20,8 +20,17 @@
 		<div class="divider"></div>
 		<div class="results">
 			<br/>
-			<h6>Showing top 10 results...</h6>
-			<p>Refine your search by selecting a keyword of interest for each paper</p>
+			<div class="section result">
+				<div class="row">
+					<div class="col s10">
+						<h6>Showing top 10 results...</h6>
+						<p>Refine your search by selecting a keyword of interest for each paper</p>
+					</div>
+					<div class="col s2">
+						<input id = "reload-query" class="form-control btn" type="submit" value="Reload" aria-label="Reload">
+					</div>
+				</div>
+			</div>
 			{% for result in results %}
 				<div class="section result">
 					<div class="row">
@@ -41,7 +50,7 @@
 											{% for keyword in result.keyPhrases %}
 												<p>
 													<label>
-														<input type="checkbox" class="filled-in" />
+														<input type="checkbox" class="filled-in" name="keyword"/>
 														<span>{{keyword}}</span>
 													</label>
 												</p>
@@ -67,6 +76,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 	<script>
+	let new_words = [];
+
 	var query_button = document.getElementById("submit-query");
 	query_button.onclick = function(){
 		var query_string = document.getElementById("search-query").value
@@ -101,6 +112,19 @@
 			tag_button.click();
 		}
 	});
+
+	$('input[name="keyword"]').change(function() {
+		console.log($(this).siblings()[0].innerHTML);
+		new_words.push($(this).siblings()[0].innerHTML);
+	});
+
+	let reload = document.getElementById("reload-query");
+	reload.onclick = function() {
+		var query_string = document.getElementById("search-query").value;
+		new_words.forEach(element => query_string += " "  + element);
+		console.log("{{ url_for('results') }}?query=\'" + query_string+"\'");
+		window.location.href = "{{ url_for('results') }}?query=\'" + query_string+"\'";
+	}
 
 	</script>
 
