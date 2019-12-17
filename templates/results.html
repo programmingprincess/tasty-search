@@ -70,7 +70,8 @@
 	var query_button = document.getElementById("submit-query");
 	query_button.onclick = function(){
 		var query_string = document.getElementById("search-query").value
-		console.log(query_string);
+		console.log("{{ url_for('results') }}?query=\'" + query_string+"\'");
+		window.location.href = "{{ url_for('results') }}?query=\'" + query_string+"\'";
 	};
 
 	var query_input = document.getElementById("search-query");

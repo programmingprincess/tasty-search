@@ -1,5 +1,3 @@
-#!/usr/bin/python2
-
 from flask import Flask, render_template, url_for, request, redirect
 import random
 import requests
@@ -15,31 +13,6 @@ import sklearn
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
-test = [{
-	"title": "Paper 1",
-	"paperAbstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-	"keyPhrases": ["paper", "abstract", "test"],
-	"venue": "CHI",
-	"numCitedBy": "10",
-	"numKeyCitations": "5"
-
-}, {
-	"title": "Paper 2",
-	"paperAbstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-	"keyPhrases": ["paper", "abstract", "test"],
-	"venue": "CHI",
-	"numCitedBy": "15",
-	"numKeyCitations": "10"
-}, {
-	"title": "Paper 3",
-	"paperAbstract": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-	"keyPhrases": ["paper", "abstract", "test", "information retrieval"],
-	"venue": "CHI",
-	"numCitedBy": "20",
-	"numKeyCitations": "15"
-
-}]
-
 '''
 	We have to read through latin1 because python2-->python3 encoding
 
@@ -51,13 +24,13 @@ test = [{
 					   keyPhrases, numKeyReferences
 '''
 
-# sup_model=""
-# with open(r"pickles/lamdamart_1000_0.02_50.pickle", "rb") as f:
-# 		sup_model = pickle.load(f, encoding="latin1")
-#
-# docs_info=""
-# with open(r"pickles/docs_info.pickle", "rb") as f:
-# 		docs_info = pickle.load(f, encoding="latin1")
+sup_model=""
+with open(r"pickles/lamdamart_3_ft.pickle", "rb") as f:
+		sup_model = pickle.load(f, encoding="latin1")
+
+docs_info=""
+with open(r"pickles/docs_info.pickle", "rb") as f:
+		docs_info = pickle.load(f, encoding="latin1")
 
 def model_predict(query):
 	'''
@@ -111,23 +84,26 @@ def get_sorted_docs(test_pred, n):
 	pred_dict = []
 
 	# return the document associated with each score
-	for idx, key in enumerate(docs_info):
-		pred_dict.append([key, test_pred[idx]])
 
+	for idx, doc in enumerate(docs_info.keys()):
+		pred_dict.append([doc, test_pred[idx]])	
+	    
 	my_scores = sorted(pred_dict, key = lambda x: x[1], reverse=True)
 
 	return my_scores[:n]
 
 def get_features(query):
-
+	print("Making inverted index...")
 	idx = metapy.index.make_inverted_index('config_academic.toml')
+	print("Inverted index finished!")
 	ranker = metapy.index.OkapiBM25()
 	ranker2 = metapy.index.AbsoluteDiscount()
 
 	q = metapy.index.Document()
 	q.content(query)
-
+	print("Scoring BM25...")
 	score_bm25 = ranker.score(idx, q, num_results=8541)
+	print("Scoring Absolute Discounting...")
 	score_ad = ranker2.score(idx, q, num_results=8541)
 
 	scores_bm25 = {}
@@ -138,15 +114,16 @@ def get_features(query):
 		scores_ad[idx.metadata(score_ad[score][0]).get('id')] = score_ad[score][1]
 
 	res = []
-	for doc in docs_info.keys():
-		res.append([scores_b25[doc], scores_ad[doc], docs_info[doc]['numCitedBy'],docs_info[doc]['numKeyCitations']])
+	for idx,doc in enumerate(docs_info.keys()):
+		#res.append([scores_bm25[doc], scores_ad[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
+		res.append([scores_bm25[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
 
 	return res
 
 
 @app.route('/')
 def hello(name=None):
-	# model_predict("lol")
+	model_predict("lol")
 	return render_template('index.html', name=name)
 
 @app.route('/results', methods=['GET'])
@@ -155,7 +132,6 @@ def results():
 	# "pretty" removes the quotations at beginning and end of query
 	pretty_query = request.args.get('query')
 	pretty_query = pretty_query[1:-1]
-	# results = json.loads(model_predict(pretty_query))
-	results = test
+	results = json.loads(model_predict(pretty_query))
 
 	return render_template('results.html', results=results, query=pretty_query)
