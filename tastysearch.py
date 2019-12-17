@@ -14,13 +14,13 @@ app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 '''
-	We have to read through latin1 because python2-->python3 encoding 
+	We have to read through latin1 because python2-->python3 encoding
 
 	sup_model: supervised LambdaMART model with 1000 estimators
 					   trained on the training set given by search engine competition
 
 	docs_info: dictionary of dictionaries. keyed by doc_id. contains:
-					   paperAbstract, title, venue, numCitedBy, numKeyCitations, 
+					   paperAbstract, title, venue, numCitedBy, numKeyCitations,
 					   keyPhrases, numKeyReferences
 '''
 
@@ -35,11 +35,11 @@ with open(r"pickles/docs_info.pickle", "rb") as f:
 def model_predict(query):
 	'''
 	parameters
-	- query: the query a user inputted 
+	- query: the query a user inputted
 
 	output
 	- JSON of top X documents that are relevant to the query
-		each doc json contains: paperAbstract, title, venue, numCitedBy, 
+		each doc json contains: paperAbstract, title, venue, numCitedBy,
 		numKeyCitations, keyPhrases, numKeyReferences
 
 
@@ -67,23 +67,24 @@ def model_predict(query):
 
 		res_dict.append(d)
 
-	
+
 	return json.dumps(res_dict)
 
 
 def get_sorted_docs(test_pred, n):
 	'''
 	parameters
-	- test_pred: document ranking scores by supervised model 
+	- test_pred: document ranking scores by supervised model
 			(ordered by docs_info. iteration through dictionaries are stable)
 	- n: the top N documents we want to return as a result
 
-	output: 
-	- list of (doc_id, score), sorted by top n 
+	output:
+	- list of (doc_id, score), sorted by top n
 	'''
 	pred_dict = []
 
 	# return the document associated with each score
+
 	for idx, doc in enumerate(docs_info.keys()):
 		pred_dict.append([doc, test_pred[idx]])	
 	    
@@ -100,7 +101,6 @@ def get_features(query):
 
 	q = metapy.index.Document()
 	q.content(query)
-	
 	print("Scoring BM25...")
 	score_bm25 = ranker.score(idx, q, num_results=8541)
 	print("Scoring Absolute Discounting...")
@@ -119,7 +119,7 @@ def get_features(query):
 		res.append([scores_bm25[doc], docs_info[doc]['numCitedBy'][0],docs_info[doc]['numKeyCitations'][0]])
 
 	return res
-	
+
 
 @app.route('/')
 def hello(name=None):

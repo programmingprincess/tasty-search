@@ -65,6 +65,24 @@ h3 {
 	/* border: 1px solid lightgray; */
 }
 
-.keywords {
-	float: left;
+.keywords-card {
+	float: right;
+}
+
+.card-title {
+	font-size: 18px;
+}
+
+[type="checkbox"].filled-in:not(:checked)+span:not(.lever):after {
+
+	border: 1px solid #5a5a5a
+}
+
+.user-tag {
+	display: inline;
+}
+
+.citations {
+	font-size: 14px;
+	color: #7d7d7d;
 }
